@@ -2,6 +2,7 @@ package com.example.xl.socketexample;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import java.io.DataInputStream;
@@ -52,7 +53,7 @@ public class Server extends AppCompatActivity {
 
     private class SocketServerThread extends Thread {
 
-        static final int SocketServerPORT = 8080;
+        static final int SocketServerPORT = 8081;
         int count = 0;
 
         @Override
@@ -63,7 +64,8 @@ public class Server extends AppCompatActivity {
 
             try {
                 serverSocket = new ServerSocket(SocketServerPORT);
-                Server.this.runOnUiThread(new Runnable() {
+
+                Server.this.runOnUiThread(          new Runnable() {
 
                     @Override
                     public void run() {
@@ -74,32 +76,23 @@ public class Server extends AppCompatActivity {
 
                 while (true) {
                     socket = serverSocket.accept();
-                    dataInputStream = new DataInputStream(
-                            socket.getInputStream());
-                    dataOutputStream = new DataOutputStream(
-                            socket.getOutputStream());
-
-                    String messageFromClient = "";
-
-                    //If no message sent from client, this code will block the program
-                    messageFromClient = dataInputStream.readUTF();
-
+                    Log.e("aceptando conneccion->",socket.getLocalAddress()+Integer.toString(socket.getLocalPort()));
+                    dataInputStream = new DataInputStream(socket.getInputStream());
+                    dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                    String messageFromClient = dataInputStream.readUTF();
                     count++;
                     message += "#" + count + " from " + socket.getInetAddress()
                             + ":" + socket.getPort() + "\n"
                             + "Msg from client: " + messageFromClient + "\n";
-
                     Server.this.runOnUiThread(new Runnable() {
-
                         @Override
                         public void run() {
                             msg.setText(message);
+                            Log.e("mensage->",message                                                                                                                                                                   );
                         }
                     });
-
                     String msgReply = "Hello from Android, you are #" + count;
                     dataOutputStream.writeUTF(msgReply);
-
                 }
             } catch (IOException e) {
                 // TODO Auto-generated catch block
@@ -115,28 +108,38 @@ public class Server extends AppCompatActivity {
 
             } finally {
                 if (socket != null) {
+                    Log.e("menssge socket->","no null");
                     try {
                         socket.close();
+
                     } catch (IOException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
+
                     }
                 }
 
                 if (dataInputStream != null) {
+                    Log.e("menssge data input->","no null");
                     try {
                         dataInputStream.close();
+
                     } catch (IOException e) {
                         // TODO Auto-generated catch block
+
                         e.printStackTrace();
+
                     }
                 }
 
                 if (dataOutputStream != null) {
+                    Log.e("menssge data ouput->","no null");
                     try {
+
                         dataOutputStream.close();
                     } catch (IOException e) {
                         // TODO Auto-generated catch block
+
                         e.printStackTrace();
                     }
                 }
@@ -150,10 +153,8 @@ public class Server extends AppCompatActivity {
         try {
             Enumeration<NetworkInterface> enumNetworkInterfaces = NetworkInterface.getNetworkInterfaces();
             while (enumNetworkInterfaces.hasMoreElements()) {
-                NetworkInterface networkInterface = enumNetworkInterfaces
-                        .nextElement();
-                Enumeration<InetAddress> enumInetAddress = networkInterface
-                        .getInetAddresses();
+                NetworkInterface networkInterface = enumNetworkInterfaces.nextElement();
+                Enumeration<InetAddress> enumInetAddress = networkInterface.getInetAddresses();
                 while (enumInetAddress.hasMoreElements()) {
                     InetAddress inetAddress = enumInetAddress.nextElement();
 
