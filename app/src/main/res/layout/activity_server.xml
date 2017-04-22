@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:autoLink="web"
-        android:text="http://android-er.blogspot.com/"
+        android:text="Servidor"
         android:textStyle="bold" />
 
     <TextView
